@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package organisation.service.test.v1;
+
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/protobuf/field_mask.proto";
+
+service TestService {
+  option (google.api.default_host) = "test.organisation.com";
+
+  rpc Get(GetRequest) returns (GetResponse) {
+    option (google.api.http) = {
+      get: "/v1/{name=workspaces/*/test/*}"
+    };
+    option (google.api.method_signature) = "name";
+  }
+}
+
+message GetRequest {
+  string workspace = 1;
+  string test_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+message GetResponse {
+  Test test = 1;
+}
+
+message Test {
+  string test_id = 1;
+  string name = 2;
+}

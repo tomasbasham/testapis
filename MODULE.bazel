@@ -1,0 +1,15 @@
+module(name = "apis")
+
+bazel_dep(name = "rules_buf", version = "0.3.0", dev_dependency = True)
+bazel_dep(name = "gazelle", version = "0.34.0", dev_dependency = True)
+
+buf = use_extension("@rules_buf//buf:extensions.bzl", "buf")
+buf.toolchains(version = "v1.26.0")
+
+# Allows targets to reference dependencies as @buf_deps.
+buf.dependency(module = "buf.build/googleapis/googleapis:f0e53af8f2fc4556b94f482688b57223")
+use_repo(buf, "buf_deps")
+
+# repo_name is specified here, using the older name for the protobuf repository,
+# because gazelle annoyingly generates dependencies using the old name.
+bazel_dep(name = "protobuf", version = "26.0", repo_name = "com_google_protobuf")

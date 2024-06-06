@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+SCRIPT_ROOT=$(dirname ${BASH_SOURCE})/../..
+
+GIT_SHA=$(git rev-parse HEAD)
+GIT_STATE=""
+if [ ! -z "$(git status --porcelain)" ]; then
+  GIT_STATE="dirty"
+fi
+
+cat <<EOF
+BUILD_TIMESTAMP $(date -u +'%Y-%m-%dT%H:%M:%SZ')
+GIT_SHA ${GIT_SHA}
+GIT_STATE ${GIT_STATE}
+EOF
