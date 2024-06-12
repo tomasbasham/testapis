@@ -6,14 +6,16 @@ import "google/api/annotations.proto";
 import "google/api/client.proto";
 import "google/protobuf/field_mask.proto";
 
+option go_package = "github.com/tomasbasham/testapis/organisation/service/test/v1;test";
+option java_multiple_files = true;
+option java_package = "com.organisation.service.test.v1";
+
 service TestService {
   option (google.api.default_host) = "test.organisation.com";
 
   rpc Get(GetRequest) returns (GetResponse) {
-    option (google.api.http) = {
-      get: "/v1/{name=workspaces/*/test/*}"
-    };
-    option (google.api.method_signature) = "name";
+    option (google.api.http) = {get: "/v1/{test_id=workspaces/*/test/*}"};
+    option (google.api.method_signature) = "test_id";
   }
 }
 

@@ -1,15 +1,32 @@
 module(name = "apis")
 
-bazel_dep(name = "rules_buf", version = "0.3.0", dev_dependency = True)
-bazel_dep(name = "gazelle", version = "0.34.0", dev_dependency = True)
+bazel_dep(name = "buildifier_prebuilt", version = "6.4.0", dev_dependency = True)
 
-buf = use_extension("@rules_buf//buf:extensions.bzl", "buf")
-buf.toolchains(version = "v1.26.0")
+# ==========
+# === Go ===
+# ==========
 
-# Allows targets to reference dependencies as @buf_deps.
-buf.dependency(module = "buf.build/googleapis/googleapis:f0e53af8f2fc4556b94f482688b57223")
-use_repo(buf, "buf_deps")
+bazel_dep(name = "rules_go", version = "0.48.0")
+bazel_dep(name = "gazelle", version = "0.37.0")
 
-# repo_name is specified here, using the older name for the protobuf repository,
-# because gazelle annoyingly generates dependencies using the old name.
-bazel_dep(name = "protobuf", version = "26.0", repo_name = "com_google_protobuf")
+go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
+go_deps.from_file(go_mod = "//:go.mod")
+
+# External dependencies, as defined in go.mod.
+use_repo(
+    go_deps,
+    "org_golang_google_genproto_googleapis_api",
+    "org_golang_google_grpc",
+    "org_golang_google_protobuf",
+)
+
+# ================
+# === Protobuf ===
+# ================
+
+bazel_dep(name = "rules_proto", version = "6.0.0", dev_dependency = True)
+
+# protobufs and extra compilers.
+bazel_dep(name = "protobuf", version = "26.0")
+bazel_dep(name = "googleapis", version = "0.0.0-20240326-1c8d509c5")
+bazel_dep(name = "grpc_gateway", version = "2.20.0")

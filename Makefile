@@ -20,13 +20,12 @@ help:
 	@echo "Usage: make <target>"
 	@echo
 	@echo "Targets:"
-	@echo "  all      Build and test the project (default)"
-	@echo "  build    Build the project"
-	@echo "  test     Run tests"
-	@echo "  push     Push images to the registry"
-	@echo "  gazelle  Run Gazelle to update Bazel build files"
-	@echo "  tidy     Run bazel mod tidy to update dependencies"
-	@echo "  clean    Clean the project"
+	@echo "  all     Build and test the project (default)"
+	@echo "  build   Build the project"
+	@echo "  test    Run tests"
+	@echo "  gazelle Run Gazelle to update Bazel build files"
+	@echo "  tidy    Run bazel mod tidy to update dependencies"
+	@echo "  clean   Clean the project"
 
 .PHONY: build
 build:
@@ -35,10 +34,6 @@ build:
 .PHONY: test
 test: buildifier
 	$(BAZEL) test //...
-
-.PHONY: push
-push: build
-	$(BAZEL) run //:buf_push
 
 .PHONY: gazelle
 gazelle:

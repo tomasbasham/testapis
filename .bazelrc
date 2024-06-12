@@ -1,1 +1,3 @@
 build --workspace_status_command scripts/print-workspace-status --stamp
+common --registry=https://raw.githubusercontent.com/bazelbuild/bazel-central-registry/main
+common --registry=https://raw.githubusercontent.com/kapetndev/bazel-registry/master

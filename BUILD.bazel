@@ -1,35 +1,26 @@
-load("@gazelle//:def.bzl", "gazelle", "gazelle_binary")
-load("@rules_buf//buf:defs.bzl", "buf_lint_test")
-load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@buildifier_prebuilt//:rules.bzl", "buildifier_test")
+load("@gazelle//:def.bzl", "gazelle")
 
-# Export the buf.yaml to make it available to rules in other packages.
-exports_files(["buf.yaml"])
+# add an alias, go_default_library, to each service
+# gazelle:go_naming_convention import_alias
 
-gazelle(
-    name = "gazelle",
-    gazelle = ":gazelle-buf",
-)
+# protobuf compilers
+# gazelle:go_proto_compilers @rules_go//proto:go_proto
+# gazelle:go_grpc_compilers @rules_go//proto:go_grpc,@grpc_gateway//protoc-gen-grpc-gateway:go_gen_grpc_gateway
 
-gazelle_binary(
-    name = "gazelle-buf",
-    languages = [
-        "@gazelle//language/proto",
-        "@rules_buf//gazelle/buf:buf",
-    ],
-)
+# protobuf type resolutions
+# gazelle:resolve proto proto google/protobuf/field_mask.proto @protobuf//:field_mask_proto
+# gazelle:resolve proto proto google/api/annotations.proto @googleapis//google/api:annotations_proto
+# gazelle:resolve proto go google/api/annotations.proto @org_golang_google_genproto_googleapis_api//annotations
+# gazelle:resolve proto proto google/api/client.proto @googleapis//google/api:client_proto
+# gazelle:resolve proto go google/api/client.proto @org_golang_google_genproto_googleapis_api//annotations
+gazelle(name = "gazelle")
 
-proto_library(
-    name = "organisation_service_test_v1_proto",
-    srcs = ["test.proto"],
-    visibility = ["//visibility:public"],
-    deps = [
-        "@buf_deps//google/api:api_proto",
-        "@com_google_protobuf//:field_mask_proto",
-    ],
-)
-
-buf_lint_test(
-    name = "organisation_service_test_v1_proto_lint",
-    config = "//:buf.yaml",
-    targets = [":organisation_service_test_v1_proto"],
+buildifier_test(
+    name = "buildifier",
+    srcs = glob([
+        "**/*.bazel",
+        "**/*.bzl",
+    ]),
+    lint_mode = "warn",
 )
